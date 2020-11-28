@@ -13,10 +13,12 @@
 #include <stdexcept>
 #include <type_traits>
 
-#include "net/proto2/public/message.h"
+#include "google/protobuf/message.h"
 #include "pybind11_protobuf/proto_utils.h"
 
 namespace pybind11 {
+namespace proto2 = ::google::protobuf;
+
 namespace google {
 
 // The value of PYBIND11_PROTOBUF_MODULE_PATH will be different depending on

@@ -10,14 +10,23 @@
 #include <string>
 #include <typeindex>
 
-#include "google/protobuf/any.proto.h"
-#include "net/proto2/proto/descriptor.proto.h"
-#include "net/proto2/public/descriptor.h"
-#include "net/proto2/public/message.h"
+#include "google/protobuf/any.pb.h"
+#include "google/protobuf/descriptor.pb.h"
+#include "google/protobuf/descriptor.h"
+#include "google/protobuf/message.h"
+#include "google/protobuf/message.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
+#include "google/protobuf/io/coded_stream.h"
 
 namespace pybind11 {
+namespace proto2 = ::google::protobuf;
+
 namespace google {
 namespace {
+typedef std::int32_t int32;
+typedef std::uint32_t uint32;
+typedef std::int64_t int64;
+typedef std::uint64_t uint64;
 
 // A type used with DispatchFieldDescriptor to represent a generic enum value.
 struct GenericEnum {};
@@ -930,11 +939,12 @@ bool AnyUnpackToPyProto(const ::google::protobuf::Any& any_proto,
   // proto, and copied once if py_proto is a native python proto.
   if (detail::type_caster_base<proto2::Message> caster;
       caster.load(py_proto, false)) {
-    return static_cast<proto2::Message&>(caster).ParseFromCord(
+    return static_cast<proto2::Message&>(caster).ParseFromString(
         any_proto.value());
   } else {
     bytes serialized(nullptr, any_proto.value().size());
-    any_proto.value().CopyToArray(PYBIND11_BYTES_AS_STRING(serialized.ptr()));
+    char* bytes_ptr = PYBIND11_BYTES_AS_STRING(serialized.ptr());
+    any_proto.value().copy(bytes_ptr, any_proto.value().size());
     getattr(py_proto, "ParseFromString")(serialized);
     return true;
   }

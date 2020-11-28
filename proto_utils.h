@@ -17,12 +17,14 @@
 #include <stdexcept>
 #include <string>
 
-#include "google/protobuf/any.proto.h"
-#include "net/proto2/public/descriptor.h"
-#include "net/proto2/public/message.h"
-#include "net/proto2/public/reflection.h"
+#include "google/protobuf/any.pb.h"
+#include "google/protobuf/descriptor.h"
+#include "google/protobuf/message.h"
+#include "google/protobuf/reflection.h"
 
 namespace pybind11 {
+namespace proto2 = ::google::protobuf;
+
 namespace google {
 
 // Alias for checking whether a c++ type is a proto.
